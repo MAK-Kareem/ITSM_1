@@ -1,0 +1,82 @@
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Card, Descriptions, Tag, Button, Space, Steps, Spin, message } from 'antd';
+import { ArrowLeftOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { ChangeRequest, CR_STAGES } from '../../types/change-request.types';
+import changeRequestService from '../../services/change-request.service';
+import authService from '../../services/auth.service';
+import dayjs from 'dayjs';
+
+const ChangeRequestDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [cr, setCr] = useState<ChangeRequest | null>(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const currentUser = authService.getCurrentUser();
+
+  useEffect(() => {
+    if (id) {
+      loadCR();
+    }
+  }, [id]);
+
+  const loadCR = async () => {
+    setLoading(true);
+    try {
+      const data = await changeRequestService.getById(Number(id));
+      setCr(data);
+    } catch (error) {
+      message.error('Failed to load change request');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading || !cr) {
+    return <Spin size="large" style={{ display: 'flex', justifyContent: 'center', marginTop: 100 }} />;
+  }
+
+  return (
+    <div>
+      <Space style={{ marginBottom: 16 }}>
+        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/change-requests')}>
+          Back
+        </Button>
+      </Space>
+
+      <Card title={`Change Request: ${cr.crNumber}`}>
+        <Descriptions bordered column={2}>
+          <Descriptions.Item label="Status">
+            <Tag color={cr.currentStatus === 'approved' ? 'green' : 'blue'}>
+              {cr.currentStatus.toUpperCase()}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="Priority">
+            <Tag color={cr.businessPriority === 'High' ? 'red' : 'orange'}>
+              {cr.businessPriority}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="Purpose" span={2}>
+            {cr.purposeOfChange}
+          </Descriptions.Item>
+          <Descriptions.Item label="Description" span={2}>
+            {cr.descriptionOfChange}
+          </Descriptions.Item>
+        </Descriptions>
+      </Card>
+
+      <Card title="Workflow Progress" style={{ marginTop: 16 }}>
+        <Steps
+          current={cr.currentStage - 1}
+          status={cr.currentStatus === 'rejected' ? 'error' : 'process'}
+          items={CR_STAGES.map(stage => ({
+            title: stage.name,
+            description: `Stage ${stage.stage}`,
+          }))}
+        />
+      </Card>
+    </div>
+  );
+};
+
+export default ChangeRequestDetail;

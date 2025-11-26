@@ -1,0 +1,39 @@
+/* --- Cleaned CSS Reset --- */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  /* Remove specific background colors */
+  /* MainLayout.tsx now handles this */
+
+  /* Ensure they take up full height */
+  min-height: 100vh;
+  height: 100%;
+
+  /* Remove all default margins/padding */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Default text color (can be overridden) */
+  color: #333;
+}
+
+/* Let child elements inherit background color */
+div, section, main, header, footer {
+  background-color: transparent;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

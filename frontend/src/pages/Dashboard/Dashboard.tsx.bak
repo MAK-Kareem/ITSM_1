@@ -1,0 +1,187 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import authService from '../../services/auth.service';
+import './Dashboard.css';
+
+const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const user = authService.getCurrentUser();
+
+  const handleLogout = () => {
+    authService.logout();
+  };
+
+  const modules = [
+    {
+      id: 'asset',
+      title: 'Asset Management',
+      description: 'Track and manage IT assets, inventory, and equipment lifecycle',
+      icon: 'fas fa-server',
+      color: 'color-asset',
+      path: '/asset'
+    },
+    {
+      id: 'incident',
+      title: 'Incident Management',
+      description: 'Report, track, and resolve IT incidents and service disruptions',
+      icon: 'fas fa-exclamation-triangle',
+      color: 'color-incident',
+      path: '/incident'
+    },
+    {
+      id: 'change',
+      title: 'Change Management',
+      description: 'Plan, approve, and implement IT changes with proper controls',
+      icon: 'fas fa-exchange-alt',
+      color: 'color-change',
+      path: '/change'
+    },
+    {
+      id: 'helpdesk',
+      title: 'Helpdesk',
+      description: 'Manage support tickets and user service requests efficiently',
+      icon: 'fas fa-headset',
+      color: 'color-helpdesk',
+      path: '/helpdesk'
+    },
+    {
+      id: 'document',
+      title: 'Document Management',
+      description: 'Store, organize, and manage documents and knowledge base',
+      icon: 'fas fa-folder-open',
+      color: 'color-document',
+      path: '/document'
+    },
+    {
+      id: 'noc',
+      title: 'NOC Monitoring',
+      description: 'Monitor network operations and infrastructure health in real-time',
+      icon: 'fas fa-desktop',
+      color: 'color-noc',
+      path: '/noc'
+    },
+    {
+      id: 'hr',
+      title: 'HR Management',
+      description: 'Manage employees, leave, attendance, and HR operations',
+      icon: 'fas fa-users',
+      color: 'color-hr',
+      path: '/hr'
+    },
+    {
+      id: 'sim',
+      title: 'SIM Management',
+      description: 'Track and manage SIM cards, mobile assets, and telecom services',
+      icon: 'fas fa-sim-card',
+      color: 'color-sim',
+      path: '/sim'
+    },
+    {
+      id: 'policy',
+      title: 'Policy Management',
+      description: 'Manage IT policies, compliance, and governance documentation',
+      icon: 'fas fa-shield-alt',
+      color: 'color-policy',
+      path: '/policy'
+    },
+    {
+      id: 'hub',
+      title: 'Collaboration Hub',
+      description: 'Team communication, announcements, and collaboration tools',
+      icon: 'fas fa-comments',
+      color: 'color-collaboration',
+      path: '/hub'
+    }
+  ];
+
+  const handleModuleClick = (path: string) => {
+    navigate(path);
+  };
+
+  return (
+    <div className="dashboard-container">
+      {/* Header Section with Logout */}
+      <div className="dashboard-header">
+        <div>
+          <h1 className="dashboard-title">EazyPay ITSM Portal</h1>
+          <p className="dashboard-subtitle">Welcome back, {user?.firstName}! Select a module to get started</p>
+        </div>
+        <button 
+          onClick={handleLogout}
+          style={{
+            background: 'linear-gradient(135deg, #ef476f 0%, #ff6b35 100%)',
+            color: 'white',
+            border: 'none',
+            padding: '12px 24px',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 15px rgba(239, 71, 111, 0.3)',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(239, 71, 111, 0.4)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(239, 71, 111, 0.3)';
+          }}
+        >
+          <i className="fas fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </div>
+
+      {/* Modules Grid - NO SIDEBAR */}
+      <div className="modules-grid">
+        {modules.map((module) => (
+          <div key={module.id} className={`eazy-module-card ${module.color}`}>
+            <i className={`${module.icon} eazy-module-icon`}></i>
+            <h3 className="module-title">{module.title}</h3>
+            <p className="module-description">{module.description}</p>
+            <button 
+              className="button-colored mt-auto" 
+              onClick={() => handleModuleClick(module.path)}
+            >
+              <i className="fas fa-arrow-right mr-1"></i> Open Module
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer Section */}
+      <footer className="dashboard-footer">
+        <div className="footer-content">
+          <div className="footer-left">
+            <p className="footer-text">
+              © {new Date().getFullYear()} EazyPay ITSM. All rights reserved.
+            </p>
+          </div>
+          <div className="footer-center">
+            <p className="footer-text">
+              Version 1.0 | Powered by EazyPay Technologies
+            </p>
+          </div>
+          <div className="footer-right">
+            <a href="#" className="footer-link">
+              <i className="fas fa-question-circle"></i> Help
+            </a>
+            <a href="#" className="footer-link">
+              <i className="fas fa-life-ring"></i> Support
+            </a>
+            <a href="#" className="footer-link">
+              <i className="fas fa-book"></i> Documentation
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Dashboard;
